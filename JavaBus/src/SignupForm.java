@@ -2,13 +2,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SignupForm extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton signupButton;
+    private List<User> users;
 
-    public SignupForm() {
+    public SignupForm(List<User> users) {
+        this.users = users;
+
         setTitle("Signup Form");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(300, 200);
@@ -36,10 +41,19 @@ public class SignupForm extends JFrame {
                 String password = new String(passwordField.getPassword());
 
                 // Perform signup logic here
+                if (validateSignup(username, password)) {
+                    // Successful signup
+                    JOptionPane.showMessageDialog(null, "Signup successful!");
 
-                // Example: Print the entered username and password
-                System.out.println("Username: " + username);
-                System.out.println("Password: " + password);
+                    // Close the signup form
+                    dispose();
+
+                    // Open the login form
+                    LoginForm.showLoginForm(users);
+                } else {
+                    // Signup failed
+                    JOptionPane.showMessageDialog(null, "Signup failed. Please try again.");
+                }
             }
         });
 
@@ -47,11 +61,26 @@ public class SignupForm extends JFrame {
         setVisible(true);
     }
 
+    private boolean validateSignup(String username, String password) {
+        // Validate if the username is not already taken
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                JOptionPane.showMessageDialog(null, "Username already taken. Please choose another.");
+                return false;
+            }
+        }
+
+        // If the username is unique, add the new user
+        users.add(new User(username, password));
+        return true;
+    }
+
     public static void main(String[] args) {
+        List<User> users = new ArrayList<>(); // Create a new list to store users
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new SignupForm();
+                new SignupForm(users);
             }
         });
     }
