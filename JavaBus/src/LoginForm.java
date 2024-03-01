@@ -3,12 +3,19 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.sql.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
 
 public class LoginForm extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
     private List<User> users;
+    private Connection connection;
 
     public LoginForm(List<User> users) {
         this.users = users;
@@ -36,27 +43,42 @@ public class LoginForm extends JFrame {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Implement login logic here
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
 
-                // Check if the username and password match any user
-                boolean loginSuccessful = false;
-                for (User user : users) {
-                    if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                // Connect to the database
+                try {
+                    connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/carolly", "root", "null" );
+                    // Replace "mydatabase", "username", and "password" with your actual database details
+
+                    // Check if the username and password match any user in the database
+                    boolean loginSuccessful = false;
+                    String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+                    PreparedStatement statement = connection.prepareStatement(query);
+                    statement.setString(1, username);
+                    statement.setString(2, password);
+                    ResultSet resultSet = statement.executeQuery();
+
+                    if (resultSet.next()) {
                         loginSuccessful = true;
-                        break;
                     }
-                }
 
-                if (loginSuccessful) {
-                    // Successful login
-                    JOptionPane.showMessageDialog(null, "Login successful!");
+                    if (loginSuccessful) {
+                        // Successful login
+                        JOptionPane.showMessageDialog(null, "Login successful!");
 
-                    // Add logic to proceed to the main bus booking page or any other action
-                } else {
-                    // Login failed
-                    JOptionPane.showMessageDialog(null, "Login failed. Please try again.");
+                        // Add logic to proceed to the main bus booking page or any other action
+                    } else {
+                        // Login failed
+                        JOptionPane.showMessageDialog(null, "Login failed. Please try again.");
+                    }
+
+                    // Close the database connection
+                    resultSet.close();
+                    statement.close();
+                    connection.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
