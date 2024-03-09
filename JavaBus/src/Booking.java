@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+package javaapplication10;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -39,6 +36,10 @@ public class NewJFrame extends javax.swing.JFrame implements MouseListener {
     Connection con;
     PreparedStatement pst;
     ResultSet rs;
+
+    NewJFrame(int busNumber, Object object) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
   
             
@@ -64,10 +65,10 @@ public class NewJFrame extends javax.swing.JFrame implements MouseListener {
         txtbill.setText(txtbill.getText()+ "**************************************************************\n");
         txtbill.setText(txtbill.getText()+ "**************Bill......................**********************\n");
         txtbill.setText(txtbill.getText()+ "**************************************************************\n");
-        txtbill.setText(txtbill.getText()+ "Customer"+"\t"+Customer+"\\n");
-        txtbill.setText(txtbill.getText()+ "seatNo"+"\t"+seats1+"\\n");
-        txtbill.setText(txtbill.getText()+ "Price"+"\t"+Price+"\\n");
-        txtbill.setText(txtbill.getText()+ "Date"+"\t"+date+"\\n");
+        txtbill.setText(txtbill.getText()+ "Customer"+"\t"+Customer+"\n");
+        txtbill.setText(txtbill.getText()+ "seatNo"+"\t"+seats1+"\n");
+        txtbill.setText(txtbill.getText()+ "Price"+"\t"+Price+"\n");
+        txtbill.setText(txtbill.getText()+ "Date"+"\t"+date+"\n");
         txtbill.setText(txtbill.getText()+ "**************^^^^^^^^^^^^^^^^^^^^^^^^^^**********************\n");
         
     }
@@ -312,7 +313,7 @@ public class NewJFrame extends javax.swing.JFrame implements MouseListener {
         String date=date_form.format(txtdate.getDate());
         
         try {
-            pst=con.prepareStatement("select * from book where date=? and seatno=?");
+            pst= con.prepareStatement("select * from book where date=? and seatno=?");
             pst.setString(1, date);
             pst.setInt(2, seats1);
             rs=pst.executeQuery();
@@ -333,6 +334,7 @@ public class NewJFrame extends javax.swing.JFrame implements MouseListener {
                 if(k==1)
                 {
                     JOptionPane.showMessageDialog(this, "seat Booked");
+                    Bill();
                 }
                 else
                 {
